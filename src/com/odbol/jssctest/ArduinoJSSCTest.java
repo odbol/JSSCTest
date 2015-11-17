@@ -36,7 +36,10 @@ public class ArduinoJSSCTest extends TestCase {
 	protected void setUp() throws Exception {
 		super.setUp();
 		
-
+		connect();
+	}
+	
+	private void connect() {
         String port = ArduinoJSSC.findNextAvailablePort(null);
 
     	dev = new ArduinoJSSC(port) {
@@ -52,9 +55,13 @@ public class ArduinoJSSCTest extends TestCase {
     	
     	dev.initialize(115200);
 	}
+	
+	private void disconnect() {
+		dev.close();
+	}
 
 	protected void tearDown() throws Exception {
-		dev.close();
+		disconnect();
 		
 		super.tearDown();
 	}
@@ -145,4 +152,28 @@ public class ArduinoJSSCTest extends TestCase {
 	
 	
 	
+	
+	public static void main(String[] args) {
+		System.err.println("\nRunning tests");
+			
+		ArduinoJSSCTest t = new ArduinoJSSCTest();
+		
+		try {
+			System.err.println("Connecting");
+			t.connect();
+
+			System.err.println("Testing");
+			t.testSysexResponses();
+
+			System.err.println("Disconnecting");
+			t.disconnect();
+		}
+		catch (Exception e) {
+
+			System.err.println("\nTest failed: ");
+			e.printStackTrace();
+		}
+		
+		System.err.println("\nFinished tests");
+	}
 }
